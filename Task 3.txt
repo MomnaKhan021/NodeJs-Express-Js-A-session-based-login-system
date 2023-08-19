@@ -1,0 +1,48 @@
+Task 3
+
+
+
+-- Create the users table with a unique index
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+-- Create the user_addresses table with foreign key index
+CREATE TABLE user_addresses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    address VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Indexes
+CREATE INDEX idx_username ON users (username);
+CREATE INDEX idx_user_id ON user_addresses (user_id);
+
+-- Insert data into the users table
+INSERT INTO users (username, email)
+VALUES ('user1', 'user1@example.com'),
+       ('user2', 'user2@example.com');
+
+-- Insert data into the user_addresses table
+INSERT INTO user_addresses (user_id, address)
+VALUES (1, 'Address 1'),
+       (1, 'Address 2'),
+       (2, 'Address 3');
+
+SELECT u.*, COUNT(ua.id) AS address_count
+FROM users u
+LEFT JOIN user_addresses ua ON u.id = ua.user_id
+GROUP BY u.id;
+
+SELECT u.*
+FROM users u
+LEFT JOIN user_addresses ua ON u.id = ua.user_id
+WHERE ua.id IS NULL;
+
+SELECT user_id, address, COUNT(*) AS iteration_count
+FROM user_addresses
+GROUP BY user_id, address
+HAVING COUNT(*) > 1;
